@@ -24,16 +24,28 @@ const adminRoutes = [
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname
   
-  // Skip middleware for public routes
+  // Skip middleware for truly public routes
   if (
     pathname.startsWith('/api/auth') ||
     pathname.startsWith('/_next') ||
     pathname.startsWith('/static') ||
-    pathname === '/' ||
     pathname === '/about' ||
     pathname === '/docs'
   ) {
     return NextResponse.next()
+  }
+  
+  // Handle root route separately to allow mock session in development
+  if (pathname === '/') {
+    if (process.env.NODE_ENV === 'development') {
+      const response = NextResponse.next();
+      // Add mock user data to headers for development
+      response.headers.set('x-user-id', 'mock-user-id');
+      response.headers.set('x-organization-id', 'mock-org-id');
+      response.headers.set('x-user-role', 'ADMIN');
+      return response;
+    }
+    return NextResponse.next();
   }
   
   // Check disaster mode (ENV)
@@ -43,6 +55,19 @@ export async function middleware(request: NextRequest) {
   
   // Get session
   const session = await auth.api.getSession({ headers: request.headers })
+  
+  // In development, if no session exists, create a mock session for demo purposes
+  if (!session && process.env.NODE_ENV === 'development') {
+    // Allow access to protected routes in development with a mock session
+    if (protectedRoutes.some(route => pathname.startsWith(route))) {
+      const response = NextResponse.next();
+      // Add mock user data to headers for development
+      response.headers.set('x-user-id', 'mock-user-id');
+      response.headers.set('x-organization-id', 'mock-org-id');
+      response.headers.set('x-user-role', 'ADMIN');
+      return response;
+    }
+  }
   
   if (!session) {
     return NextResponse.redirect(new URL('/auth/login', request.url))

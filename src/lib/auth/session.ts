@@ -1,4 +1,5 @@
 import { auth } from '@/src/lib/auth/config';
+import { headers } from 'next/headers';
 
 /**
  * Get the current authenticated user session
@@ -8,22 +9,19 @@ export async function getAuth() {
   try {
     // In a Next.js middleware or server component context, we need to extract session from headers
     // This function should be called in server components or API routes
-    const request = getCurrentRequest();
-    if (request) {
-      // Try to get session from headers if available (set by middleware)
-      const userId = request.headers.get('x-user-id');
-      const userRole = request.headers.get('x-user-role');
-      const organizationId = request.headers.get('x-organization-id');
-      
-      if (userId && userRole && organizationId) {
-        return {
-          user: {
-            id: userId,
-            role: userRole,
-            organizationId: organizationId,
-          },
-        };
-      }
+    const headersList = headers();
+    const userId = headersList.get('x-user-id');
+    const userRole = headersList.get('x-user-role');
+    const organizationId = headersList.get('x-organization-id');
+    
+    if (userId && userRole && organizationId) {
+      return {
+        user: {
+          id: userId,
+          role: userRole,
+          organizationId: organizationId,
+        },
+      };
     }
     
     // Fallback to auth() method if headers aren't available
@@ -42,18 +40,6 @@ export async function getAuth() {
 export async function isAuthenticated() {
   const session = await getAuth();
   return !!session;
-}
-
-// Helper function to get current request in server components
-function getCurrentRequest(): Request | undefined {
-  try {
-    // This is a workaround to access the current request in server components
-    // In Next.js 13+, we can use React's context or other methods
-    // For now, we'll return undefined and rely on headers
-    return undefined;
-  } catch (error) {
-    return undefined;
-  }
 }
 
 /**

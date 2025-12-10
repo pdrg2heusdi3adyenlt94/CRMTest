@@ -1,0 +1,519 @@
+// prisma/schema.prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql" // sqlite for dev
+  url      = env("DATABASE_URL")
+}
+
+// ============================================
+// SYSTEM & AUTH
+// ============================================
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  emailVerified DateTime?
+  name          String?
+  image         String?
+  
+  // Auth
+  hashedPassword String?
+  
+  // Organization membership
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  role           UserRole
+  
+  // Account memberships
+  accountMemberships AccountMember[]
+
+  // Assignments
+  assignedTasks  Task[]    @relation("TaskAssignee")
+  assignedDeals  Deal[]    @relation("DealAssignee")
+  
+  // Audit fields
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  lastLoginAt   DateTime?
+  
+  // Soft delete
+  deletedAt     DateTime?
+  
+  // Activity tracking
+  activitiesPerformed Activity[] @relation("ActivityPerformer")
+
+  @@index([organizationId])
+  @@index([email])
+}
+
+enum UserRole {
+  SUPER_ADMIN
+  OWNER
+  ADMIN
+  USER
+}
+
+model Organization {
+  id          String   @id @default(cuid())
+  name        String
+  slug        String   @unique
+  
+  // Optional details
+  industry    String?
+  size        String?
+  website     String?
+  logoUrl     String?
+  
+  // Relations
+  users       User[]
+  accounts    Account[]
+  deals       Deal[]
+  projects    Project[]
+  tasks       Task[]
+  activities  Activity[]
+  
+  // Settings
+  settings    OrganizationSettings?
+  
+  // Audit
+  createdAt   DateTime @default(now())
+  createdBy   String?
+  updatedAt   DateTime @updatedAt
+  updatedBy   String?
+  deletedAt   DateTime?
+  
+  @@index([slug])
+}
+
+model OrganizationSettings {
+  id             String  @id @default(cuid())
+  organizationId String  @unique
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  
+  // Timezone & locale
+  timezone       String  @default("UTC")
+  locale         String  @default("en")
+  currency       String  @default("USD")
+  
+  // Feature flags
+  enableProjects Boolean @default(true)
+  enableDeals    Boolean @default(true)
+  
+  updatedAt      DateTime @updatedAt
+}
+
+// ============================================
+// CRM ENTITIES
+// ============================================
+
+model Account {
+  id             String   @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  
+  // Basic info
+  name           String
+  description    String?
+  website        String?
+  
+  // Contact info
+  email          String?
+  phone          String?
+  
+  // Address
+  address        String?
+  city           String?
+  state          String?
+  postalCode     String?
+  country        String?
+  
+  // Relations
+  contacts       Contact[]
+  deals          Deal[]
+  projects       Project[]
+  members        AccountMember[]
+  activities     Activity[]
+  
+  // Audit
+  createdAt      DateTime @default(now())
+  createdBy      String
+  updatedAt      DateTime @updatedAt
+  updatedBy      String?
+  deletedAt      DateTime?
+  
+  @@index([organizationId])
+  @@index([organizationId, name])
+  @@fulltext([name, description])
+}
+
+model AccountMember {
+  id        String  @id @default(cuid())
+  accountId String
+  account   Account @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  addedAt   DateTime @default(now())
+  addedBy   String?
+  
+  @@unique([accountId, userId])
+  @@index([userId])
+}
+
+model Contact {
+  id             String   @id @default(cuid())
+  accountId      String
+  account        Account  @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  organizationId String   // Denormalized for query performance
+  
+  // Personal info
+  firstName      String
+  lastName       String
+  email          String?
+  phone          String?
+  position       String?
+  
+  // Relations
+  activities     Activity[]
+  
+  // Audit
+  createdAt      DateTime @default(now())
+  createdBy      String
+  updatedAt      DateTime @updatedAt
+  updatedBy      String?
+  deletedAt      DateTime?
+  
+  @@index([accountId])
+  @@index([organizationId])
+  @@fulltext([firstName, lastName, email])
+}
+
+model Deal {
+  id             String    @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  accountId      String
+  account        Account   @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  
+  // Basic info
+  title          String
+  description    String?
+  
+  // Financial
+  value          Decimal?  @db.Decimal(15, 2)
+  currency       String    @default("USD")
+  
+  // Pipeline
+  stage          DealStage @default(LEAD)
+  probability    Int?      // 0-100
+  expectedCloseDate DateTime?
+  actualCloseDate   DateTime?
+  
+  // Assignment
+  assignedToId   String?
+  assignedTo     User?     @relation("DealAssignee", fields: [assignedToId], references: [id])
+  
+  // Relations
+  activities     Activity[]
+  
+  // Audit
+  createdAt      DateTime  @default(now())
+  createdBy      String
+  updatedAt      DateTime  @updatedAt
+  updatedBy      String?
+  deletedAt      DateTime?
+  
+  @@index([organizationId])
+  @@index([accountId])
+  @@index([stage])
+  @@index([organizationId, stage])
+  @@fulltext([title, description])
+}
+
+enum DealStage {
+  LEAD
+  QUALIFIED
+  PROPOSAL
+  NEGOTIATION
+  CLOSED_WON
+  CLOSED_LOST
+}
+
+model Project {
+  id             String   @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  accountId      String
+  account        Account  @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  
+  // Basic info
+  name           String
+  description    String?
+  
+  // Status
+  status         ProjectStatus @default(PLANNING)
+  
+  // Dates
+  startDate      DateTime?
+  endDate        DateTime?
+  
+  // Relations
+  tasks          Task[]
+  activities     Activity[]
+  
+  // Audit
+  createdAt      DateTime @default(now())
+  createdBy      String
+  updatedAt      DateTime @updatedAt
+  updatedBy      String?
+  deletedAt      DateTime?
+  
+  @@index([organizationId])
+  @@index([accountId])
+  @@index([organizationId, accountId])
+  @@fulltext([name, description])
+}
+
+enum ProjectStatus {
+  PLANNING
+  ACTIVE
+  ON_HOLD
+  COMPLETED
+  CANCELLED
+}
+
+model Task {
+  id             String   @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  projectId      String
+  project        Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  
+  // Basic info
+  title          String
+  description    String?
+  
+  // Status & Priority
+  status         TaskStatus   @default(TODO)
+  priority       TaskPriority @default(MEDIUM)
+  
+  // Assignment
+  assignedToId   String?
+  assignedTo     User?        @relation("TaskAssignee", fields: [assignedToId], references: [id])
+  
+  // Dates
+  dueDate        DateTime?
+  completedAt    DateTime?
+  
+  // Relations
+  subtasks       Subtask[]
+  activities     Activity[]
+  
+  // Audit
+  createdAt      DateTime @default(now())
+  createdBy      String
+  updatedAt      DateTime @updatedAt
+  updatedBy      String?
+  deletedAt      DateTime?
+  
+  @@index([organizationId])
+  @@index([projectId])
+  @@index([assignedToId])
+  @@index([status])
+  @@index([organizationId, status])
+  @@fulltext([title, description])
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  BLOCKED
+  REVIEW
+  COMPLETED
+}
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+model Subtask {
+  id          String      @id @default(cuid())
+  taskId      String
+  task        Task        @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  
+  title       String
+  completed   Boolean     @default(false)
+  
+  // Relations
+  activities  Activity[]
+  
+  // Audit
+  createdAt   DateTime    @default(now())
+  createdBy   String
+  updatedAt   DateTime    @updatedAt
+  completedAt DateTime?
+  
+  @@index([taskId])
+}
+
+// ============================================
+// ACTIVITY & AUDIT LOG
+// ============================================
+
+model Activity {
+  id             String       @id @default(cuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  
+  // Polymorphic relation (entity this activity belongs to)
+  entityType     EntityType
+  entityId       String
+  
+  // Activity details
+  activityType   ActivityType
+  description    String?      // Human-readable description
+  metadata       Json?        // Flexible storage for additional data
+  
+  // Relations (optional, for easier queries)
+  accountId      String?
+  account        Account?     @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  contactId      String?
+  contact        Contact?     @relation(fields: [contactId], references: [id], onDelete: Cascade)
+  dealId         String?
+  deal           Deal?        @relation(fields: [dealId], references: [id], onDelete: Cascade)
+  projectId      String?
+  project        Project?     @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  taskId         String?
+  task           Task?        @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  subtaskId      String?
+  subtask        Subtask?     @relation(fields: [subtaskId], references: [id], onDelete: Cascade)
+  
+  // Performer
+  performedById  String
+  performedBy    User         @relation("ActivityPerformer", fields: [performedById], references: [id])
+  performedAt    DateTime     @default(now())
+  
+  // Security tracking
+  ipAddress      String?
+  userAgent      String?
+  
+  @@index([organizationId])
+  @@index([entityType, entityId])
+  @@index([accountId])
+  @@index([projectId])
+  @@index([taskId])
+  @@index([performedById])
+  @@index([organizationId, performedAt])
+}
+
+enum EntityType {
+  ORGANIZATION
+  USER
+  ACCOUNT
+  CONTACT
+  DEAL
+  PROJECT
+  TASK
+  SUBTASK
+}
+
+enum ActivityType {
+  // Generic
+  CREATED
+  UPDATED
+  DELETED
+  VIEWED
+  
+  // Comments
+  COMMENTED
+  
+  // CRM specific
+  NOTE_ADDED
+  CALL_INBOUND
+  CALL_OUTBOUND
+  EMAIL_SENT
+  EMAIL_RECEIVED
+  MEETING_SCHEDULED
+  
+  // Task specific
+  TASK_ASSIGNED
+  TASK_UNASSIGNED
+  TASK_STATUS_CHANGED
+  TASK_PRIORITY_CHANGED
+  TASK_COMPLETED
+  TASK_REOPENED
+  
+  // Project specific
+  PROJECT_MEMBER_ADDED
+  PROJECT_MEMBER_REMOVED
+  PROJECT_STATUS_CHANGED
+  
+  // Deal specific
+  DEAL_STAGE_CHANGED
+  DEAL_VALUE_CHANGED
+  DEAL_WON
+  DEAL_LOST
+  
+  // Account specific
+  ACCOUNT_MEMBER_ADDED
+  ACCOUNT_MEMBER_REMOVED
+}
+
+// ============================================
+// SYSTEM
+// ============================================
+
+model SystemSettings {
+  id                 String   @id @default("global")
+  
+  // Maintenance
+  maintenanceMode    Boolean  @default(false)
+  maintenanceMessage String?
+  maintenanceStart   DateTime?
+  maintenanceEnd     DateTime?
+  
+  // System messages
+  systemMessage      String?
+  systemMessageType  SystemMessageType?
+  systemMessageActive Boolean @default(false)
+  
+  updatedAt          DateTime @updatedAt
+  updatedBy          String?
+}
+
+enum SystemMessageType {
+  INFO
+  WARNING
+  ERROR
+  SUCCESS
+}
+
+// ============================================
+// FUTURE: WEBHOOKS (V2)
+// ============================================
+
+model Webhook {
+  id             String   @id @default(cuid())
+  organizationId String
+  
+  name           String
+  url            String
+  events         String[] // ["account.created", "task.updated"]
+  secret         String   // For signature verification
+  active         Boolean  @default(true)
+  
+  // Stats
+  lastTriggeredAt DateTime?
+  failureCount   Int      @default(0)
+  
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  
+  @@index([organizationId])
+}

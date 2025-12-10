@@ -1,10 +1,11 @@
 // prisma/schema.prisma
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["fullTextIndex"]
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "sqlite" // sqlite for dev
   url      = env("DATABASE_URL")
 }
 
@@ -146,7 +147,7 @@ model Account {
   
   @@index([organizationId])
   @@index([organizationId, name])
-  @@fulltext([name, description])
+  //@@fulltext([name, description])
 }
 
 model AccountMember {
@@ -188,7 +189,7 @@ model Contact {
   
   @@index([accountId])
   @@index([organizationId])
-  @@fulltext([firstName, lastName, email])
+  //@@fulltext([firstName, lastName, email])
 }
 
 model Deal {
@@ -230,7 +231,7 @@ model Deal {
   @@index([accountId])
   @@index([stage])
   @@index([organizationId, stage])
-  @@fulltext([title, description])
+  //@@fulltext([title, description])
 }
 
 enum DealStage {
@@ -274,7 +275,7 @@ model Project {
   @@index([organizationId])
   @@index([accountId])
   @@index([organizationId, accountId])
-  @@fulltext([name, description])
+  //@@fulltext([name, description])
 }
 
 enum ProjectStatus {
@@ -324,7 +325,7 @@ model Task {
   @@index([assignedToId])
   @@index([status])
   @@index([organizationId, status])
-  @@fulltext([title, description])
+  //@@fulltext([title, description])
 }
 
 enum TaskStatus {

@@ -19,9 +19,6 @@
       }
     ],
     "baseUrl": ".",
-    "paths": {
-      "@/*": ["./src/*"]
-    },
     "noUncheckedIndexedAccess": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import { auth } from '@/src/lib/auth/config'
+import { auth } from './lib/auth/config'
 
 // Define protected routes that require authentication
 const protectedRoutes = [

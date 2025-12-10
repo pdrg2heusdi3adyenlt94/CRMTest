@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import { createAccount, updateAccount } from '@/src/actions';
-import { FormActionResponse } from '@/src/actions/utils';
+import { createAccount, updateAccount } from '../../actions';
+import { FormActionResponse } from '../../actions/utils';
 
 interface AccountFormProps {
   accountId?: string;

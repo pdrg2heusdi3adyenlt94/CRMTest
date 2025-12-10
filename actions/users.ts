@@ -1,7 +1,7 @@
 'use server';
 
 import { ServerActionBase } from './base';
-import { UserService } from '@/src/services/UserService';
+import { UserService } from '../services/UserService';
 import { ActionResponse } from '@/types/actions';
 import { User } from '@prisma/client';
 

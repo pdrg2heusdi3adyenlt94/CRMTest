@@ -1,4 +1,4 @@
-import { auth } from '@/src/lib/auth/config';
+import { auth } from './auth/config';
 
 /**
  * Get the current authenticated user session

@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { BarChart3, Users, Building2, DollarSign, FileText, Settings, Menu, X } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import ErrorBoundary from '@/components/error-boundary'
 
 export default function DashboardLayout({
   children,
@@ -126,7 +127,9 @@ export default function DashboardLayout({
 
         <main className="flex-1 pb-8">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 py-6">
-            {children}
+            <ErrorBoundary>
+              {children}
+            </ErrorBoundary>
           </div>
         </main>
       </div>

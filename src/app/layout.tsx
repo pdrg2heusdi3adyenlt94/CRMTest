@@ -4,6 +4,7 @@ import './globals.css'
 import { ThemeProvider } from '@/components/theme-provider'
 import { CommandPalette } from '@/components/command-palette'
 import { AuthProviderWrapper } from '@/components/auth/auth-provider'
+import ErrorBoundary from '@/components/error-boundary'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -27,7 +28,9 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            {children}
+            <ErrorBoundary>
+              {children}
+            </ErrorBoundary>
             <CommandPalette />
           </ThemeProvider>
         </AuthProviderWrapper>

@@ -1,64 +1,50 @@
 ```
-# Backup files
-*.backup
-
 # Dependencies
 node_modules/
-.pnpm-store/
-.npm/
-.yarn/
-.yarn-cache/
 
 # Build outputs
 dist/
 build/
 .next/
 out/
-.nuxt/
-public/dist/
 
-# Logs
-*.log
-
-# Environment
+# Environment variables
+.env
 .env.local
-.env.*
-!.env.example
+*.env
 
-# IDE
+# IDE files
 .vscode/
 .idea/
 *.swp
 *.swo
 
-# OS
-.DS_Store
-Thumbs.db
+# Logs
+*.log
 
-# Python (if applicable)
+# Temporary files
+*.tmp
+
+# Python
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
 .Python
-venv/
-.venv/
-.env
-.envs
-.pytest_cache/
-.mypy_cache/
-.coverage
-htmlcov/
-coverage/
+*.so
 
-# Node.js (if applicable)
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-node_modules/
-jspm_packages/
-typings/
-.nyc_output
+# Coverage reports
 coverage/
-*.lcov
+htmlcov/
+.coverage
+
+# MyPy cache
+.mypy_cache/
+
+# Pytest cache
+.pytest_cache/
+
+# OS generated files
+.DS_Store
+Thumbs.db
 ```

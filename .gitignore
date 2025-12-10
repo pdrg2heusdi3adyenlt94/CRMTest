@@ -1,1 +1,40 @@
-Nothing should be ignored based on the provided file changes, as they consist only of source code files (.ts, .tsx) and type definition files (.ts). No build artifacts, dependencies, temporary files, or other ignorable content were detected in the changes.
+```
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+
+# Environment variables
+.env
+.env.local
+.env.*
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*.tmp
+
+# Logs
+*.log
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Coverage reports
+coverage/
+htmlcov/
+.coverage
+
+# System files
+.DS_Store
+Thumbs.db
+```

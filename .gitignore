@@ -1,53 +1,55 @@
 ```
 # Dependencies
 node_modules/
-
-# Environment variables
-.env
-.env.local
-.env.*
-
-# Editor/IDE files
-.vscode/
-.idea/
-*.swp
-*.swo
-*.tmp
-
-# Python
+.pnpm-store/
+.npm/
+.yarn/
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
 .Python
 venv/
-.venv/
 env/
 ENV/
+.venv/
+.env
+.env.local
+.env.*
+!.*.env
 
 # Build outputs
 dist/
 build/
-*.min.js
-*.min.css
-
-# Logs
-*.log
-
-# OS generated files
-.DS_Store
-Thumbs.db
-
-# Coverage reports
+target/
+out/
+_output/
 coverage/
 htmlcov/
-.coverage
-
-# Next.js
-.next/
-out/
-
-# Temporary files
+.nyc_output/
+*.log
 *.tmp
-*.temp
+*.swp
+*.swo
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Prisma
+prisma/migrations/
+prisma/schema.prisma.bak
+
+# Environment
+.env
+.env.local
+.env.*
+!.*.env
 ```

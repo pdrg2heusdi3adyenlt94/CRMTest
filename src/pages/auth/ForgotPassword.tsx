@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -80,7 +80,7 @@ const ForgotPassword: React.FC = () => {
         <CardFooter className="flex flex-col">
           <div className="text-sm text-center text-gray-500 dark:text-gray-400">
             Remember your password?{' '}
-            <Link to="/auth/login" className="font-medium text-blue-600 hover:underline">
+            <Link href="/auth/login" className="font-medium text-blue-600 hover:underline">
               Sign in
             </Link>
           </div>

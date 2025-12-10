@@ -4,6 +4,7 @@ import { auth } from '@/src/lib/auth/config'
 
 // Define protected routes that require authentication
 const protectedRoutes = [
+  '/',
   '/dashboard',
   '/accounts',
   '/contacts',
@@ -38,14 +39,16 @@ export async function middleware(request: NextRequest) {
   // Handle root route separately to allow mock session in development
   if (pathname === '/') {
     if (process.env.NODE_ENV === 'development') {
-      const response = NextResponse.next();
+      // Redirect to dashboard with mock session headers
+      const response = NextResponse.redirect(new URL('/dashboard', request.url));
       // Add mock user data to headers for development
       response.headers.set('x-user-id', 'mock-user-id');
       response.headers.set('x-organization-id', 'mock-org-id');
       response.headers.set('x-user-role', 'ADMIN');
       return response;
     }
-    return NextResponse.next();
+    // In production, redirect to dashboard if accessing root
+    return NextResponse.redirect(new URL('/dashboard', request.url));
   }
   
   // Check disaster mode (ENV)

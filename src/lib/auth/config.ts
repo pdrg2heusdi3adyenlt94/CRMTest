@@ -1,6 +1,7 @@
-import { betterAuth } from "better-auth"
-import { prismaAdapter } from "better-auth/adapters/prisma"
-import { prisma } from "@/lib/db"
+import { betterAuth } from "better-auth";
+import { prismaAdapter } from "better-auth/adapters/prisma";
+import { prisma } from "@/lib/db";
+import { UserRole } from "@prisma/client";
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
@@ -20,4 +21,19 @@ export const auth = betterAuth({
   jwt: {
     enabled: true,
   },
-})
+  user: {
+    // Add custom fields for role and organization
+    additionalFields: {
+      role: {
+        type: "string",
+        required: true,
+        defaultValue: "USER",
+      },
+      organizationId: {
+        type: "string",
+        required: true,
+        defaultValue: "",
+      },
+    },
+  },
+});

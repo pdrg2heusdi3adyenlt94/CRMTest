@@ -13,6 +13,7 @@ A modern, minimal CRM system built for small-to-medium teams with focus on simpl
 - **Task Management**: Assign and track individual tasks
 - **Activity Logging**: Complete audit trail of all actions
 - **Full-text Search**: Fast search across all entities
+- **Authentication & Authorization**: Secure login system with role-based access control (RBAC) and multi-tenancy support
 
 ## Technology Stack
 
@@ -22,6 +23,18 @@ A modern, minimal CRM system built for small-to-medium teams with focus on simpl
 - **Better-Auth** for authentication
 - **Tailwind CSS** and **shadcn/ui** for styling
 - **Zod** for schema validation
+
+## Authentication System
+
+The application implements a comprehensive authentication and authorization system:
+
+- User registration and login with email/password
+- Role-based access control (SUPER_ADMIN, OWNER, ADMIN, USER)
+- Multi-tenancy with organization-based data isolation
+- Protected routes and API endpoints
+- Server and client-side authorization utilities
+
+For detailed information about the authentication system, see [AUTH-README.md](./AUTH-README.md).
 
 ## Database Seeding
 

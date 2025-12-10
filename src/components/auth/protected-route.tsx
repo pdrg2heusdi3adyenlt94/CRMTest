@@ -1,9 +1,9 @@
 'use client';
 
 import { UserRole } from '@prisma/client';
-import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { ReactNode, useEffect } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
+import { useAuth } from '@/context/AuthContext';
 
 interface ProtectedRouteProps {
   children: ReactNode;
@@ -23,20 +23,20 @@ export default function ProtectedRoute({
   redirectTo = '/auth/login',
   fallback = null,
 }: ProtectedRouteProps) {
-  const { data: session, status } = useSession();
+  const { user, loading, isAuthenticated } = useAuth();
   const router = useRouter();
   
   useEffect(() => {
-    if (status === 'loading') return; // Still loading, don't redirect yet
+    if (loading) return; // Still loading, don't redirect yet
     
-    if (status === 'unauthenticated') {
+    if (!isAuthenticated || !user) {
       router.push(redirectTo);
       return;
     }
 
-    if (status === 'authenticated' && session.user) {
+    if (user) {
       // Check role permissions
-      const userRole = session.user.role as UserRole;
+      const userRole = user.role as UserRole;
       
       // Define role hierarchy
       const roleHierarchy: Record<UserRole, number> = {
@@ -55,14 +55,14 @@ export default function ProtectedRoute({
       }
 
       // Check organization access if organizationId is provided
-      if (organizationId && session.user.organizationId !== organizationId) {
+      if (organizationId && user.organizationId !== organizationId) {
         router.push('/unauthorized');
         return;
       }
     }
-  }, [status, session, requiredRole, organizationId, redirectTo, router]);
+  }, [loading, isAuthenticated, user, requiredRole, organizationId, redirectTo, router]);
 
-  if (status === 'loading') {
+  if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
@@ -70,9 +70,9 @@ export default function ProtectedRoute({
     );
   }
 
-  if (status === 'unauthenticated' || 
-      (status === 'authenticated' && session?.user && 
-       !checkPermissions(session.user, requiredRole, organizationId))) {
+  if (!isAuthenticated || 
+      (user && 
+       !checkPermissions(user, requiredRole, organizationId))) {
     return fallback;
   }
 

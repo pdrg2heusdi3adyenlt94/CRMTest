@@ -1,56 +1,77 @@
-# Node modules
+# Dependencies
 node_modules/
 
-# Build output
-.next/
-out/
+# Build artifacts
+dist/
+build/
+*.js.map
+*.ts.map
 
-# Dependencies
-.pnp.*
-*.log
-
-# TypeScript
-*.tsbuildinfo
-
-# Prisma
-prisma/*.db
-
-# Environment variables
+# Environment
 .env
 .env.local
-.env.development
-.env.test
-.env.production
+*.env.*
 
-# Editor directories and files
+# Editors
 .vscode/
 .idea/
 *.swp
+*.swo
 
-# MacOS
-.DS_Store
-
-# Coverage
-coverage/
-
-# Compiled and build artifacts
-*.pyc
-__pycache__/
-*.o
-*.obj
-dist/
-build/
-
-# Logs and temp files
+# Logs
 *.log
+
+# Temp files
 *.tmp
 
-# Compressed files
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+venv/
+.venv/
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Coverage
+.coverage
+coverage/
+htmlcov/
+
+# MyPy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pytest
+.pytest_cache/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Compressed
 *.zip
-*.tar
 *.gz
+*.tar
 *.tgz
 *.bz2
 *.xz
 *.7z
 *.rar
+*.zst
+*.lz4
+*.lzh
+*.cab
+*.arj
+*.rpm
+*.deb
+*.Z
+*.lz
+*.lzo
+*.tar.gz
+*.tar.bz2
+*.tar.xz
+*.tar.zst

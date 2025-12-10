@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -16,7 +17,7 @@ const Register: React.FC = () => {
   const [loading, setLoading] = useState(false);
   
   const { register } = useAuth();
-  const navigate = useNavigate();
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -37,7 +38,7 @@ const Register: React.FC = () => {
         setError(result.error);
       } else {
         // Redirect to dashboard on successful registration
-        navigate('/dashboard');
+        router.push('/dashboard');
       }
     } catch (err) {
       setError('An unexpected error occurred during registration');
@@ -115,7 +116,7 @@ const Register: React.FC = () => {
         <CardFooter className="flex flex-col">
           <div className="text-sm text-center text-gray-500 dark:text-gray-400">
             Already have an account?{' '}
-            <Link to="/auth/login" className="font-medium text-blue-600 hover:underline">
+            <Link href="/auth/login" className="font-medium text-blue-600 hover:underline">
               Sign in
             </Link>
           </div>

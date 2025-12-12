@@ -1,4 +1,4 @@
-import { UserRole } from '@/src/types/user';
+import { UserRole } from '@/types/user';
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 

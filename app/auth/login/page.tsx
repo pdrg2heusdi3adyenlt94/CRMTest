@@ -9,12 +9,6 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { EyeIcon, EyeOffIcon, MailIcon, LockIcon } from 'lucide-react';
 import Link from 'next/link';
-import { Metadata } from 'next';
-
-export const metadata: Metadata = {
-  title: 'Login | CRM App',
-  description: 'Sign in to your CRM account',
-};
 
 export function LoginForm() {
   const router = useRouter();

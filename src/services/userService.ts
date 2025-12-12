@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/db';
 import { User } from '@prisma/client';
-import { UserRole } from '@/src/types/user';
+import { UserRole } from '@/types/user';
 import { BaseService, ServiceContext } from './baseService';
 
 interface UserCreateInput {

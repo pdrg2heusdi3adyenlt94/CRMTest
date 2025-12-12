@@ -1,6 +1,6 @@
 'use client';
 
-import { SessionProvider } from 'better-auth/react';
+import { ClientSdk } from 'better-auth/react';
 import { auth } from '@/auth';
 
 interface Props {
@@ -8,5 +8,5 @@ interface Props {
 }
 
 export function SessionProviderWrapper({ children }: Props) {
-  return <SessionProvider authClient={auth}>{children}</SessionProvider>;
+  return <ClientSdk authClient={auth}>{children}</ClientSdk>;
 }

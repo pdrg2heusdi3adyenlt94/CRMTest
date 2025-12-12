@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server';
-import { getCurrentUserFromHeaders } from '@/src/lib/auth/server';
-import { UserRole } from '@/src/types/user';
+import { getCurrentUserFromHeaders } from '@/lib/auth/server';
+import { UserRole } from '@/types/user';
 
 export async function GET(request: NextRequest) {
   try {

@@ -1,6 +1,6 @@
 'use client';
 
-import { UserRole } from '@/src/types/user';
+import { UserRole } from '@/types/user';
 import { useRouter } from 'next/navigation';
 import { ReactNode, useEffect, useState } from 'react';
 import { useAuth } from '@/context/AuthContext';

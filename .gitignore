@@ -45,7 +45,7 @@ build/
 *.log
 *.tmp
 
-# Compressed files
+# Compression
 *.zip
 *.tar
 *.gz

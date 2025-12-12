@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
-import { auth } from '@/src/lib/auth/config'
 
 // Define protected routes that require authentication
 const protectedRoutes = [
@@ -39,16 +38,11 @@ export async function middleware(request: NextRequest) {
   // Handle root route separately to allow mock session in development
   if (pathname === '/') {
     if (process.env.NODE_ENV === 'development') {
-      // Redirect to dashboard with mock session headers
-      const response = NextResponse.redirect(new URL('/dashboard', request.url));
-      // Add mock user data to headers for development
-      response.headers.set('x-user-id', 'mock-user-id');
-      response.headers.set('x-organization-id', 'mock-org-id');
-      response.headers.set('x-user-role', 'ADMIN');
-      return response;
+      // In development, redirect to dashboard directly without requiring session
+      return NextResponse.redirect(new URL('/dashboard', request.url));
     }
-    // In production, redirect to dashboard if accessing root
-    return NextResponse.redirect(new URL('/dashboard', request.url));
+    // In production, redirect to auth if accessing root
+    return NextResponse.redirect(new URL('/auth/login', request.url));
   }
   
   // Check disaster mode (ENV)
@@ -56,9 +50,23 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/disaster', request.url))
   }
   
-  // Get session
-  const session = await auth.api.getSession({ headers: request.headers })
+  // For development, we'll simulate authentication by checking for a mock session
+  let session = null;
   
+  // In development, if we're not on auth pages, allow access with mock session
+  if (process.env.NODE_ENV === 'development' && !pathname.startsWith('/auth')) {
+    // Simulate a mock session for development
+    session = {
+      user: {
+        id: 'mock-user-id',
+        email: 'admin@example.com',
+        name: 'Mock User',
+        role: 'ADMIN',
+        organizationId: 'mock-org-id'
+      }
+    };
+  }
+
   // In development, if no session exists, create a mock session for demo purposes
   if (!session && process.env.NODE_ENV === 'development') {
     // Allow access to protected routes in development with a mock session
@@ -73,6 +81,10 @@ export async function middleware(request: NextRequest) {
   }
   
   if (!session) {
+    // Don't redirect to auth if we're already on an auth page
+    if (pathname.startsWith('/auth')) {
+      return NextResponse.next();
+    }
     return NextResponse.redirect(new URL('/auth/login', request.url))
   }
   

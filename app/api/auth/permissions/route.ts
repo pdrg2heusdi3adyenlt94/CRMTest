@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server';
 import { getCurrentUserFromHeaders } from '@/src/lib/auth/server';
-import { UserRole } from '@prisma/client';
+import { UserRole } from '@/src/types/user';
 
 export async function GET(request: NextRequest) {
   try {

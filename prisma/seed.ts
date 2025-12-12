@@ -1,4 +1,11 @@
-import { Prisma, PrismaClient, UserRole, DealStage, ProjectStatus, TaskStatus, TaskPriority } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
+
+// Define string literal types for our enum-like values since SQLite doesn't support real enums
+type UserRole = 'SUPER_ADMIN' | 'OWNER' | 'ADMIN' | 'USER';
+type DealStage = 'LEAD' | 'QUALIFIED' | 'PROPOSAL' | 'NEGOTIATION' | 'CLOSED_WON' | 'CLOSED_LOST';
+type ProjectStatus = 'PLANNING' | 'ACTIVE' | 'ON_HOLD' | 'COMPLETED' | 'CANCELLED';
+type TaskStatus = 'TODO' | 'IN_PROGRESS' | 'BLOCKED' | 'REVIEW' | 'COMPLETED';
+type TaskPriority = 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT';
 
 const prisma = new PrismaClient();
 

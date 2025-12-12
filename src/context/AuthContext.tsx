@@ -28,6 +28,37 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   // Check for existing session on initial load
   useEffect(() => {
     const checkExistingSession = async () => {
+      // In development, create a mock session if none exists
+      if (process.env.NODE_ENV === 'development') {
+        const storedSessionId = localStorage.getItem('sessionId');
+        
+        if (!storedSessionId) {
+          // Create a mock session for development
+          const mockUser = {
+            id: 'mock-user-id',
+            name: 'Development User',
+            email: 'dev@example.com',
+            role: 'ADMIN',
+            createdAt: new Date(),
+            lastLoginAt: new Date(),
+            organizationId: 'mock-org-id'
+          };
+          
+          setUser(mockUser);
+          setSession({
+            id: 'mock-session-id',
+            userId: 'mock-user-id',
+            token: 'mock-token',
+            expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24 hours
+            createdAt: new Date()
+          });
+          
+          localStorage.setItem('sessionId', 'mock-session-id');
+          setLoading(false);
+          return;
+        }
+      }
+      
       const storedSessionId = localStorage.getItem('sessionId');
       
       if (storedSessionId) {

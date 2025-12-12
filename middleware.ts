@@ -67,18 +67,7 @@ export async function middleware(request: NextRequest) {
     };
   }
 
-  // In development, if no session exists, create a mock session for demo purposes
-  if (!session && process.env.NODE_ENV === 'development') {
-    // Allow access to protected routes in development with a mock session
-    if (protectedRoutes.some(route => pathname.startsWith(route))) {
-      const response = NextResponse.next();
-      // Add mock user data to headers for development
-      response.headers.set('x-user-id', 'mock-user-id');
-      response.headers.set('x-organization-id', 'mock-org-id');
-      response.headers.set('x-user-role', 'ADMIN');
-      return response;
-    }
-  }
+
   
   if (!session) {
     // Don't redirect to auth if we're already on an auth page

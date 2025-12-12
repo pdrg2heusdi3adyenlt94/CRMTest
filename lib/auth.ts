@@ -7,8 +7,9 @@ import { cookies } from 'next/headers';
  */
 export async function getAuth() {
   try {
-    // Extract session token from cookies
-    const sessionToken = cookies().get('better-auth.session_token');
+    // Extract session token from cookies - need to await cookies()
+    const nextCookies = await cookies();
+    const sessionToken = nextCookies.get('better-auth.session_token');
     
     if (!sessionToken) {
       return null;

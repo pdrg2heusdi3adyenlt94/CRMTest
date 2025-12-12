@@ -1,10 +1,12 @@
+```
 # Dependencies
 node_modules/
 next-env.d.ts
 # Build outputs
 dist/
 build/
-target/
+.next/
+out/
 
 # Environment variables
 .env

@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import { redirect } from 'next/navigation';
-import { getAuth } from '@/lib/auth';
+import { getAuth } from 'lib/auth';
 
 export default async function AuthLayout({
   children,

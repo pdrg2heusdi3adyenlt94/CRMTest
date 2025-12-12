@@ -7,6 +7,15 @@ type ProjectStatus = 'PLANNING' | 'ACTIVE' | 'ON_HOLD' | 'COMPLETED' | 'CANCELLE
 type TaskStatus = 'TODO' | 'IN_PROGRESS' | 'BLOCKED' | 'REVIEW' | 'COMPLETED';
 type TaskPriority = 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT';
 
+// Simple synchronous password hashing function for seeding purposes
+function hashPasswordSync(password: string): string {
+  // Using Node.js built-in crypto module
+  const crypto = require('crypto');
+  return crypto
+    .pbkdf2Sync(password, 'salt', 10000, 64, 'sha512')
+    .toString('hex');
+}
+
 const prisma = new PrismaClient();
 
 async function main() {
@@ -37,6 +46,7 @@ async function main() {
       name: 'Admin User',
       role: 'ADMIN',
       organizationId: organization.id,
+      hashedPassword: hashPasswordSync('password123'), // Default password for admin
     },
   });
 
@@ -48,6 +58,7 @@ async function main() {
       name: 'Regular User',
       role: 'USER',
       organizationId: organization.id,
+      hashedPassword: hashPasswordSync('password123'), // Default password for regular user
     },
   });
 

@@ -6,6 +6,20 @@ node_modules/
 dist/
 build/
 .next/
+out/
+
+# Logs and temp files
+*.log
+*.tmp
+
+# Environment variables
+.env
+.env.local
+*.env.*
+
+# Editors
+.vscode/
+.idea/
 
 # Python
 __pycache__/
@@ -13,51 +27,18 @@ __pycache__/
 *.pyo
 *.pyd
 .Python
-env/
-venv/
-.venv/
-.ENV
-.env
-.env.local
-.env.*
-.envrc
-.pytest_cache/
-.mypy_cache/
-.coverage
-coverage/
-htmlcov/
-
-# Logs
-*.log
-
-# OS generated files
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-Thumbs.db:encryptable
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-*.tmp
-
-# Environment variable files
-.env
-.env.local
-*.env.*
+*.so
 
 # Coverage
 coverage/
 htmlcov/
-*.coveragerc
+.coverage
 
-# Compressed files
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Compression
 *.zip
 *.gz
 *.tar

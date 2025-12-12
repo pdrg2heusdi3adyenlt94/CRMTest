@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/db';
 import { User, Organization } from '@prisma/client';
-import { getAuth } from '@/lib/auth';
+import { getAuth } from 'lib/auth';
 
 /**
  * Authentication service to handle user and organization context

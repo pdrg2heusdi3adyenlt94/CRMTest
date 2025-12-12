@@ -1,60 +1,45 @@
 ```
 # Dependencies
 node_modules/
-
+next-env.d.ts
 # Build outputs
 dist/
 build/
-target/
-
-# Prisma
-prisma/migrations/
-prisma/schema.prisma.bak
+.next/
+out/
 
 # Environment variables
 .env
 .env.local
 *.env.*
 
-# Python
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-.Python
-env/
-venv/
-.venv/
-.venv*/
-.python-version
-
-# Logs
-*.log
-
-# OS generated files
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
-
-# IDE
+# IDE specific
 .vscode/
 .idea/
 *.swp
 *.swo
 
-# Coverage
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Python specific
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+
+# Coverage reports
 coverage/
 htmlcov/
 .coverage
-*.gcov
-*.lcov
 
 # Temporary files
 *.tmp
 *.temp
-*~
 ```

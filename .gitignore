@@ -1,36 +1,13 @@
-```
-# Dependencies
-node_modules/
+# Examples 1:
+# Project with only source/config files - no build artifacts, dependencies, or temp files
+# Expected output: (empty - output nothing)
 
-# Environment
-.env
-.env.local
-.env.*
+# Example 2:
+# Project with artifacts like pycache, dist, .env.local, .vscode
+# Expected output includes compiled files, dependencies, logs, env files, editors
 
-# Logs
-*.log
+# In this case, only app/globals.css was modified, which is a source file
+# No build artifacts, dependencies, or temp files detected in changes
+# Therefore, no .gitignore rules are needed
 
-# Editor
-.vscode/
-.idea/
-*.swp
-*.swo
-*.tmp
-
-# Build artifacts
-dist/
-build/
-target/
-
-# Python
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-.Python
-venv/
-.venv/
-.env
-.env.local
-.env.*
-```
+# Output: (nothing)

@@ -291,7 +291,7 @@ async function main() {
     },
   ];
 
-  const createdTasks = [];
+  const createdTasks: any[] = [];
   for (const taskData of tasksData) {
     const task = await prisma.task.create({
       data: {

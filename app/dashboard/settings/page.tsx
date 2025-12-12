@@ -116,7 +116,7 @@ export default function SettingsPage() {
                       rows={4} 
                       className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
                       placeholder="Tell us about yourself..."
-                    >Marketing Director with 5+ years of experience in CRM systems</textarea>
+                    ></textarea>
                   </div>
                   
                   <div className="flex justify-end">
